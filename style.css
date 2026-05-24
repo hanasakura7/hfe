@@ -388,7 +388,84 @@ button {
   font-size: 12px;
 }
 
+.diagnostics-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pill-danger {
+  color: var(--crimson) !important;
+  border-color: rgba(201, 68, 45, 0.45) !important;
+}
+.pill-danger .dot {
+  background: var(--crimson);
+  box-shadow: 0 0 10px var(--crimson);
+}
+
+.log-entry-error {
+  border-color: var(--crimson) !important;
+  box-shadow: 0 0 15px rgba(201, 68, 45, 0.25) !important;
+  background: linear-gradient(
+    to right,
+    rgba(201, 68, 45, 0.08),
+    var(--bg-2)
+  ) !important;
+}
+
+[data-theme="light"] .log-entry-error {
+  box-shadow: 0 0 12px rgba(201, 68, 45, 0.35) !important;
+}
+
+.diag-card-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.diag-card-clickable:hover {
+  background: var(--bg-3) !important;
+  transform: translateX(4px);
+}
+.diag-card-clickable .toggle-icon {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--text-mute);
+  transition: transform 0.3s ease;
+}
+.diag-card-clickable.expanded .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.equip-detail-list {
+  margin: -6px 10px 10px 48px;
+  padding: 12px 16px;
+  background: rgba(var(--bg-2), 0.5);
+  border-left: 2px solid var(--line);
+  display: grid;
+  gap: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
 /* ----------------- ROW 1 : ALERT BANNER ------------------------ */
+
 .alert-banner {
   position: relative;
   background: linear-gradient(90deg, var(--bg-1), var(--bg-2));

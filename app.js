@@ -10,7 +10,7 @@
   const ALERT_CYCLE_MS = 4500;
   const MANUAL_RESUME_MS = 15000;
   const CCTV_CACHE_VERSION = "20260524";
-  const USE_SINGLE_DUMMY_CCTV_IMAGE = true;
+  const USE_SINGLE_DUMMY_CCTV_IMAGE = false;
   const ACTION_LOG_KEY = "mushroomFarmActionLog";
 
   const APP_PAGES = ["dashboard", "diagnostics", "logging"];
@@ -499,9 +499,15 @@
       return `images/image_01_01.png?v=${CCTV_CACHE_VERSION}`;
     }
 
-    const roomPart = String(roomNumber || 1).padStart(2, "0");
+    const prefixes = {
+      1: "GO",
+      2: "BJ",
+      3: "WO",
+    };
+
+    const prefix = prefixes[roomNumber] || "GO";
     const zonePart = String(zone || 1).padStart(2, "0");
-    return `images/image_${roomPart}_${zonePart}.png?v=${CCTV_CACHE_VERSION}`;
+    return `images/${prefix}_${zonePart}.png?v=${CCTV_CACHE_VERSION}`;
   }
 
   function paintCctvFeeds() {
@@ -694,12 +700,60 @@
     updateThemeIcon(next);
   });
 
+  // Diagnostics Interaction
+  function initDiagnostics() {
+    $$(".diag-card-clickable").forEach((card) => {
+      card.addEventListener("click", () => {
+        const type = card.dataset.equip;
+        const detail = $(`#detail-${type}`);
+        if (!detail) return;
+
+        const isHidden = detail.classList.contains("hidden");
+        // Close others in section (optional, let's keep it simple and just toggle this one)
+        detail.classList.toggle("hidden");
+        card.classList.toggle("expanded");
+      });
+    });
+
+    // Update Pills based on presence of error classes
+    function updateDiagPills() {
+      const sysSection = $("#systemHealthSection");
+      const equipSection = $("#equipmentConditionSection");
+
+      if (sysSection) {
+        const hasError = sysSection.querySelector(".log-entry-error");
+        const pill = $("#systemStatusPill", sysSection);
+        if (pill) {
+          pill.querySelector("span:not(.dot)").textContent = hasError
+            ? "SYSTEM DEGRADED"
+            : "SYSTEM OK";
+          pill.classList.toggle("pill-danger", !!hasError);
+          pill.classList.toggle("pill-live", !hasError);
+        }
+      }
+
+      if (equipSection) {
+        const hasError = equipSection.querySelector(".log-entry-error");
+        const pill = $("#equipmentStatusPill", equipSection);
+        if (pill) {
+          pill.querySelector("span:not(.dot)").textContent = hasError
+            ? "EQUIPMENT ISSUES"
+            : "EQUIPMENT OK";
+          pill.classList.toggle("pill-danger", !!hasError);
+          pill.classList.toggle("pill-live", !hasError);
+        }
+      }
+    }
+
+    updateDiagPills();
+  }
+
   (async function init() {
     initTheme();
     setActiveNav("dashboard");
-
     renderActionLogs();
     setMode("auto");
+    initDiagnostics();
 
     const firstTab = els.roomTabs[0];
     if (firstTab) {

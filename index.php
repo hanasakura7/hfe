@@ -230,15 +230,17 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 </main>
 
 <main class="diagnostics-view app-view hidden" data-view="diagnostics" data-testid="diagnostics-view">
-    <section class="logging-panel">
+    
+    <!-- SECTION 1: SYSTEM HEALTH -->
+    <section class="logging-panel diagnostic-section" id="systemHealthSection">
         <header>
             <div>
-                <p class="log-kicker">System Health</p>
-                <h2><i class="fa-solid fa-stethoscope"></i> Diagnostics</h2>
+                <p class="log-kicker">Core Infrastructure</p>
+                <h2><i class="fa-solid fa-server"></i> System Health</h2>
             </div>
-            <div class="pill pill-live"><span class="dot"></span> SYSTEM OK</div>
+            <div class="pill pill-status" id="systemStatusPill"><span class="dot"></span> <span>SYSTEM OK</span></div>
         </header>
-                <div class="log-list">
+        <div class="log-list">
             <article class="log-entry">
                 <i class="fa-solid fa-microchip"></i>
                 <div>
@@ -253,37 +255,13 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
                     <time>Status: Connected · Latency: 4ms</time>
                 </div>
             </article>
-
-            <!-- Equipment Conditions -->
-            <article class="log-entry">
-                <i class="fa-solid fa-snowflake"></i>
-                <div>
-                    <strong>Air Conditioning Unit (ACU-01)</strong>
-                    <time>Status: <span class="state-on">Optimal</span> · Next Service: 14 days</time>
-                </div>
-            </article>
-            <article class="log-entry">
-                <i class="fa-solid fa-droplet-slash"></i>
-                <div>
-                    <strong>Humidifier (H-03)</strong>
-                    <time>Status: <span class="state-alert">Broken</span> · <span class="text-mute">Valve obstruction detected. Replacement part ordered.</span></time>
-                </div>
-            </article>
-            <article class="log-entry">
-                <i class="fa-solid fa-fan"></i>
-                <div>
-                    <strong>Ventilation Fans</strong>
-                    <time>Status: <span class="state-on">Good</span> · Bearing vibration within limits.</time>
-                </div>
-            </article>
-            <article class="log-entry">
+            <article class="log-entry log-entry-error">
                 <i class="fa-solid fa-bolt"></i>
                 <div>
                     <strong>Backup Power (UPS)</strong>
-                    <time>Status: <span class="state-warn">Warning</span> · Battery health at 78%. Recommend replacement soon.</time>
+                    <time>Status: <span class="state-alert">Critical</span> · Battery Cell #3 Failure</time>
                 </div>
             </article>
-
             <article class="log-entry">
                 <i class="fa-solid fa-wifi"></i>
                 <div>
@@ -299,9 +277,82 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
                 </div>
             </article>
         </div>
+    </section>
 
+    <!-- SECTION 2: EQUIPMENT CONDITION -->
+    <section class="logging-panel diagnostic-section" id="equipmentConditionSection">
+        <header>
+            <div>
+                <p class="log-kicker">Farm Hardware</p>
+                <h2><i class="fa-solid fa-screwdriver-wrench"></i> Equipment Condition</h2>
+            </div>
+            <div class="pill pill-status" id="equipmentStatusPill"><span class="dot"></span> <span>EQUIPMENT ISSUES</span></div>
+        </header>
+        <div class="log-list">
+            
+            <article class="log-entry diag-card-clickable" data-equip="acu">
+                <i class="fa-solid fa-snowflake"></i>
+                <div>
+                    <strong>Air Conditioning Units</strong>
+                    <time>3 Units · <span class="state-on">All Optimal</span></time>
+                </div>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </article>
+            <div class="equip-detail-list hidden" id="detail-acu">
+                <div class="detail-item"><span>ACU-01 (Room 1)</span> <span class="state-on">Optimal</span></div>
+                <div class="detail-item"><span>ACU-02 (Room 2)</span> <span class="state-on">Optimal</span></div>
+                <div class="detail-item"><span>ACU-03 (Room 3)</span> <span class="state-on">Optimal</span></div>
+            </div>
+
+            <article class="log-entry diag-card-clickable log-entry-error" data-equip="humidifier">
+                <i class="fa-solid fa-faucet-drip"></i>
+                <div>
+                    <strong>Humidifiers</strong>
+                    <time>3 Units · <span class="state-alert">1 Broken</span></time>
+                </div>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </article>
+            <div class="equip-detail-list hidden" id="detail-humidifier">
+                <div class="detail-item"><span>HM-01 (Room 1)</span> <span class="state-on">Optimal</span></div>
+                <div class="detail-item"><span>HM-02 (Room 2)</span> <span class="state-on">Optimal</span></div>
+                <div class="detail-item"><span>HM-03 (Room 3)</span> <span class="state-alert">Broken (Valve Error)</span></div>
+            </div>
+
+            <article class="log-entry diag-card-clickable" data-equip="fan">
+                <i class="fa-solid fa-fan"></i>
+                <div>
+                    <strong>Ventilation Fans</strong>
+                    <time>6 Units · <span class="state-on">All Good</span></time>
+                </div>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </article>
+            <div class="equip-detail-list hidden" id="detail-fan">
+                <div class="detail-item"><span>FAN-01 (Room 1)</span> <span class="state-on">Good</span></div>
+                <div class="detail-item"><span>FAN-02 (Room 1)</span> <span class="state-on">Good</span></div>
+                <div class="detail-item"><span>FAN-03 (Room 2)</span> <span class="state-on">Good</span></div>
+                <div class="detail-item"><span>FAN-04 (Room 2)</span> <span class="state-on">Good</span></div>
+                <div class="detail-item"><span>FAN-05 (Room 3)</span> <span class="state-on">Good</span></div>
+                <div class="detail-item"><span>FAN-06 (Room 3)</span> <span class="state-on">Good</span></div>
+            </div>
+
+            <article class="log-entry diag-card-clickable" data-equip="lights">
+                <i class="fa-solid fa-lightbulb"></i>
+                <div>
+                    <strong>Grow Light Arrays</strong>
+                    <time>12 Panels · <span class="state-warn">Minor Degradation</span></time>
+                </div>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </article>
+            <div class="equip-detail-list hidden" id="detail-lights">
+                <div class="detail-item"><span>Array-R1</span> <span class="state-on">Optimal</span></div>
+                <div class="detail-item"><span>Array-R2</span> <span class="state-warn">Flicker Detected</span></div>
+                <div class="detail-item"><span>Array-R3</span> <span class="state-on">Optimal</span></div>
+            </div>
+
+        </div>
     </section>
 </main>
+
 
 <main class="logging-view app-view hidden" data-view="logging" data-testid="logging-view">
 

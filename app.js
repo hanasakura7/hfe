@@ -46,7 +46,9 @@
   const $$ = (q, r = document) => Array.from(r.querySelectorAll(q));
 
   const els = {
+    themeToggle: $("#themeToggle"),
     appNavItems: $$(".topbar-nav-item"),
+
     appViews: $$(".app-view"),
 
     logList: $("#logList"),
@@ -668,8 +670,34 @@
     }, POLL_INTERVAL_MS);
   }
 
+  function initTheme() {
+    const saved = localStorage.getItem("mushroomFarmTheme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+    updateThemeIcon(saved);
+  }
+
+  function updateThemeIcon(theme) {
+    if (!els.themeToggle) return;
+    const icon = els.themeToggle.querySelector("i");
+    if (theme === "light") {
+      icon.className = "fa-solid fa-sun";
+    } else {
+      icon.className = "fa-solid fa-moon";
+    }
+  }
+
+  els.themeToggle?.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("mushroomFarmTheme", next);
+    updateThemeIcon(next);
+  });
+
   (async function init() {
+    initTheme();
     setActiveNav("dashboard");
+
     renderActionLogs();
     setMode("auto");
 

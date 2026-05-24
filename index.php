@@ -36,8 +36,12 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
         <button class="topbar-nav-item" type="button" data-nav="logging" aria-current="false">Logging</button>
     </nav>
 
-    <div class="topbar-meta">
+        <div class="topbar-meta">
+        <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark mode">
+            <i class="fa-solid fa-moon"></i>
+        </button>
         <span id="clock" data-testid="system-clock"><i class="fa-regular fa-clock"></i> --:--:--</span>
+
         <span class="pill pill-live"><span class="dot"></span> LIVE</span>
     </div>
 </header>
@@ -234,7 +238,7 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             </div>
             <div class="pill pill-live"><span class="dot"></span> SYSTEM OK</div>
         </header>
-        <div class="log-list">
+                <div class="log-list">
             <article class="log-entry">
                 <i class="fa-solid fa-microchip"></i>
                 <div>
@@ -249,6 +253,37 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
                     <time>Status: Connected · Latency: 4ms</time>
                 </div>
             </article>
+
+            <!-- Equipment Conditions -->
+            <article class="log-entry">
+                <i class="fa-solid fa-snowflake"></i>
+                <div>
+                    <strong>Air Conditioning Unit (ACU-01)</strong>
+                    <time>Status: <span class="state-on">Optimal</span> · Next Service: 14 days</time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-droplet-slash"></i>
+                <div>
+                    <strong>Humidifier (H-03)</strong>
+                    <time>Status: <span class="state-alert">Broken</span> · <span class="text-mute">Valve obstruction detected. Replacement part ordered.</span></time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-fan"></i>
+                <div>
+                    <strong>Ventilation Fans</strong>
+                    <time>Status: <span class="state-on">Good</span> · Bearing vibration within limits.</time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-bolt"></i>
+                <div>
+                    <strong>Backup Power (UPS)</strong>
+                    <time>Status: <span class="state-warn">Warning</span> · Battery health at 78%. Recommend replacement soon.</time>
+                </div>
+            </article>
+
             <article class="log-entry">
                 <i class="fa-solid fa-wifi"></i>
                 <div>
@@ -264,6 +299,7 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
                 </div>
             </article>
         </div>
+
     </section>
 </main>
 

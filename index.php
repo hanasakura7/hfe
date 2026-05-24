@@ -29,13 +29,20 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             <p>Smart Mushroom Farm · 3 incubation rooms · live telemetry</p>
         </div>
     </div>
+
+    <nav class="topbar-nav" aria-label="Global navigation">
+        <button class="topbar-nav-item" type="button" data-nav="dashboard" aria-current="page">Dashboard</button>
+        <button class="topbar-nav-item" type="button" data-nav="diagnostics" aria-current="false">Diagnostics</button>
+        <button class="topbar-nav-item" type="button" data-nav="logging" aria-current="false">Logging</button>
+    </nav>
+
     <div class="topbar-meta">
         <span id="clock" data-testid="system-clock"><i class="fa-regular fa-clock"></i> --:--:--</span>
         <span class="pill pill-live"><span class="dot"></span> LIVE</span>
     </div>
 </header>
 
-<main class="dashboard" data-testid="dashboard">
+<main class="dashboard app-view" data-view="dashboard" data-testid="dashboard">
 
     <!-- ============================================================ -->
     <!-- ROW 1 — Dual-mode alerts banner                                -->
@@ -218,6 +225,69 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 
 </main>
 
+<main class="diagnostics-view app-view hidden" data-view="diagnostics" data-testid="diagnostics-view">
+    <section class="logging-panel">
+        <header>
+            <div>
+                <p class="log-kicker">System Health</p>
+                <h2><i class="fa-solid fa-stethoscope"></i> Diagnostics</h2>
+            </div>
+            <div class="pill pill-live"><span class="dot"></span> SYSTEM OK</div>
+        </header>
+        <div class="log-list">
+            <article class="log-entry">
+                <i class="fa-solid fa-microchip"></i>
+                <div>
+                    <strong>Controller CPU Load</strong>
+                    <time>Current: 12% · Temp: 44°C</time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-database"></i>
+                <div>
+                    <strong>Database Connection</strong>
+                    <time>Status: Connected · Latency: 4ms</time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-wifi"></i>
+                <div>
+                    <strong>Telemetry Link</strong>
+                    <time>Signal: -65dBm · Packet Loss: 0.01%</time>
+                </div>
+            </article>
+            <article class="log-entry">
+                <i class="fa-solid fa-hard-drive"></i>
+                <div>
+                    <strong>Storage Usage</strong>
+                    <time>8.2GB used of 32GB · 74% free</time>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<main class="logging-view app-view hidden" data-view="logging" data-testid="logging-view">
+
+    <section class="logging-panel">
+        <header>
+            <div>
+                <p class="log-kicker">User Activity</p>
+                <h2><i class="fa-solid fa-clipboard-list"></i> Logging</h2>
+            </div>
+            <button class="log-clear-btn" id="clearLogsBtn" type="button">
+                <i class="fa-solid fa-trash-can"></i> Clear
+            </button>
+        </header>
+        <div class="log-list" id="logList">
+            <div class="log-empty">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>No user actions logged yet.</span>
+            </div>
+        </div>
+    </section>
+</main>
+
 <!-- ============================================================ -->
 <!-- CCTV modal                                                     -->
 <!-- ============================================================ -->
@@ -236,6 +306,7 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 </div>
 
 <footer class="page-foot">
+
     <span>© Mycelium Control · XAMPP / PHP <?= PHP_VERSION ?></span>
     <span id="lastSync" data-testid="last-sync">last sync —</span>
 </footer>
@@ -243,3 +314,4 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 <script src="app.js"></script>
 </body>
 </html>
+

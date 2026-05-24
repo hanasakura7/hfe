@@ -141,8 +141,13 @@ function refresh_all_rooms(PDO $pdo): void
             SET temperature=?, humidity=?, lighting=?, co2_level=?, air_flow=?
           WHERE room_id=?"
     );
-    $insAlert = $pdo->prepare(
-        "INSERT INTO system_alerts (room_id, alert_message, severity) VALUES (?, ?, ?)"
+        $insAlert = $pdo->prepare(
+        "INSERT INTO system_alerts (room_id, alert_message, severity) 
+         SELECT ?, ?, ? FROM DUAL
+         WHERE NOT EXISTS (
+             SELECT 1 FROM system_alerts 
+             WHERE room_id = ? AND alert_message = ? AND is_resolved = 0
+         )"
     );
 
     foreach ($rooms as $r) {
@@ -154,9 +159,10 @@ function refresh_all_rooms(PDO $pdo): void
 
         $alerts = detect_alerts($reading, $r, $r['mushroom_type']);
         foreach ($alerts as [$sev, $msg]) {
-            $insAlert->execute([$r['id'], $msg, $sev]);
+            $insAlert->execute([$r['id'], $msg, $sev, $r['id'], $msg]);
         }
     }
+
 
     // auto-cap alert history at ~120 rows
     $pdo->exec(

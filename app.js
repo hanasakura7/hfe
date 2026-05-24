@@ -10,6 +10,9 @@
   const POLL_INTERVAL_MS = 8000; // data refresh
   const ALERT_CYCLE_MS = 4500; // alert auto-rotate
   const MANUAL_RESUME_MS = 15000; // resume auto after manual idle
+  const CCTV_CACHE_VERSION = "20260524";
+  // Set this to false after adding image_01_02.png, image_02_01.png, etc.
+  const USE_SINGLE_DUMMY_CCTV_IMAGE = true;
   const PHASES = [
     "seeding",
     "colonisation",
@@ -62,6 +65,7 @@
     cctvModal: $("#cctvModal"),
     cctvClose: $("#cctvClose"),
     modalTitle: $("#modalTitle"),
+    modalFeed: $("#modalFeed"),
     thrForm: $("#thresholdForm"),
     thrStatus: $("#thrStatus"),
     phaseTrack: $("#phaseTrack"),
@@ -375,8 +379,27 @@
   // =================================================================
   // CCTV modal
   // =================================================================
+  function cctvImageFor(roomNumber = 1, zone = 1) {
+    if (USE_SINGLE_DUMMY_CCTV_IMAGE) {
+      return `images/image_01_01.png?v=${CCTV_CACHE_VERSION}`;
+    }
+
+    const roomPart = String(roomNumber || 1).padStart(2, "0");
+    const zonePart = String(zone || 1).padStart(2, "0");
+    return `images/image_${roomPart}_${zonePart}.png?v=${CCTV_CACHE_VERSION}`;
+  }
+
+  function paintCctvFeeds() {
+    els.cctvCells.forEach((cell) => {
+      const feed = $(".cctv-feed", cell);
+      if (!feed) return;
+      feed.style.backgroundImage = `url("${cctvImageFor(state.activeRoomMeta?.room_number, cell.dataset.zone)}")`;
+    });
+  }
+
   function openCctv(zone) {
     els.modalTitle.textContent = `Zone 0${zone} — Room ${state.activeRoomMeta?.room_number ?? "?"} · ${state.activeRoomMeta?.mushroom_type ?? ""}`;
+    els.modalFeed.style.backgroundImage = `url("${cctvImageFor(state.activeRoomMeta?.room_number, zone)}")`;
     els.cctvModal.classList.remove("hidden");
   }
   function closeCctv() {
@@ -484,6 +507,7 @@
     // form + wizard
     fillThresholds(thr);
     paintCycle(cycle);
+    paintCctvFeeds();
 
     els.lastSync.textContent =
       "last sync " + fmt.time(env.last_updated || new Date());
@@ -528,6 +552,7 @@
   // Bootstrap
   // =================================================================
   (async function init() {
+    paintCctvFeeds();
     setMode("auto");
     const firstTab = els.roomTabs[0];
     const firstId = parseInt(firstTab.dataset.roomId, 10);

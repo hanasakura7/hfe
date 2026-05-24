@@ -177,7 +177,7 @@ button { font-family: inherit; cursor: pointer; }
     position: relative; overflow: hidden;
 }
 .room-tab::before {
-    content: \"\"; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
     background: var(--line-soft); transition: background 0.25s, width 0.25s;
 }
 .room-tab:hover { background: var(--bg-2); color: var(--text); transform: translateY(-2px); }
@@ -226,7 +226,7 @@ button { font-family: inherit; cursor: pointer; }
     transition: transform 0.25s, border-color 0.25s;
 }
 .kpi-card::after {
-    content: \"\"; position: absolute; inset: 0;
+    content: ""; position: absolute; inset: 0;
     background: radial-gradient(circle at 90% -20%, rgba(212,163,115,0.08), transparent 60%);
     pointer-events: none;
 }
@@ -253,7 +253,7 @@ button { font-family: inherit; cursor: pointer; }
     color: var(--text-dim);
 }
 .machine-state::before {
-    content: \"\"; width: 8px; height: 8px; border-radius: 50%;
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
     background: var(--text-mute); flex-shrink: 0;
 }
 .machine-state.state-on::before    { background: var(--moss); box-shadow: 0 0 8px var(--moss); }
@@ -316,14 +316,21 @@ button { font-family: inherit; cursor: pointer; }
 }
 .cctv-feed {
     position: absolute; inset: 0;
+    background-color: #0a0805;
+    background-image: url("images/image_01_01.png?v=20260524");
+    background-position: center;
+    background-size: cover;
+    filter: saturate(0.92) contrast(1.08);
+}
+.cctv-feed::before {
+    content: ""; position: absolute; inset: 0;
     background:
-        radial-gradient(circle at 30% 35%, rgba(212,163,115,0.18), transparent 55%),
-        radial-gradient(circle at 70% 70%, rgba(138,169,122,0.12), transparent 55%),
-        repeating-linear-gradient(0deg, rgba(0,0,0,0.45) 0 2px, transparent 2px 4px),
-        linear-gradient(160deg, #2a1d11, #160f0a);
+        linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.28)),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0 2px, transparent 2px 4px);
+    pointer-events: none;
 }
 .cctv-feed::after {
-    content: \"\"; position: absolute; left: 0; right: 0; height: 2px;
+    content: ""; position: absolute; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, rgba(244,232,216,0.5), transparent);
     animation: scan 4s linear infinite;
 }
@@ -419,7 +426,7 @@ button { font-family: inherit; cursor: pointer; }
     position: relative;
 }
 .phase-track::before {
-    content: \"\"; position: absolute;
+    content: ""; position: absolute;
     left: 6%; right: 6%; top: 22px; height: 2px;
     background: var(--line);
 }
@@ -501,14 +508,22 @@ button { font-family: inherit; cursor: pointer; }
 .cctv-modal-inner header button:hover { color: var(--crimson); }
 .cctv-modal-feed {
     position: relative; aspect-ratio: 16 / 9; overflow: hidden;
+    background-color: #0a0805;
+    background-image: url("images/image_01_01.png?v=20260524");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: saturate(0.95) contrast(1.08);
+}
+.cctv-modal-feed::before {
+    content: ""; position: absolute; inset: 0;
     background:
-        radial-gradient(circle at 30% 35%, rgba(212,163,115,0.22), transparent 55%),
-        radial-gradient(circle at 70% 70%, rgba(138,169,122,0.16), transparent 60%),
-        repeating-linear-gradient(0deg, rgba(0,0,0,0.45) 0 2px, transparent 2px 4px),
-        linear-gradient(160deg, #2a1d11, #100a07);
+        linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.18)),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0 2px, transparent 2px 4px);
+    pointer-events: none;
 }
 .cctv-modal-feed::after {
-    content: \"\"; position: absolute; left: 0; right: 0; height: 3px;
+    content: ""; position: absolute; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, transparent, rgba(244,232,216,0.65), transparent);
     animation: scan 5s linear infinite;
 }

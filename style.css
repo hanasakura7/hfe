@@ -4,7 +4,9 @@
 
 :root {
   /* Common variables regardless of theme */
+  --font-brand: "Playfair Display", serif;
   --radius: 14px;
+
   --radius-sm: 8px;
   --font-display: "Fraunces", serif;
   --font-body: "Outfit", system-ui, sans-serif;
@@ -145,8 +147,11 @@ button {
   box-shadow: var(--shadow), var(--shadow-in);
 }
 .brand h1 {
-  font-size: 22px;
+  font-family: var(--font-brand);
+  font-size: 24px;
+  font-weight: 700;
 }
+
 .brand p {
   margin: 2px 0 0;
   color: var(--text-dim);
@@ -652,7 +657,7 @@ button {
   color: var(--amber);
 }
 .tab-type {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 22px;
   font-weight: 500;
 }
@@ -893,11 +898,11 @@ button {
   position: absolute;
   inset: 0;
   background-color: #0a0805;
-  background-image: url("images/image_01_01.png?v=20260524");
   background-position: center;
   background-size: cover;
   filter: saturate(0.92) contrast(1.08);
 }
+
 .cctv-feed::before {
   content: "";
   position: absolute;
@@ -1251,12 +1256,12 @@ button {
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background-color: #0a0805;
-  background-image: url("images/image_01_01.png?v=20260524");
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
   filter: saturate(0.95) contrast(1.08);
 }
+
 .cctv-modal-feed::before {
   content: "";
   position: absolute;

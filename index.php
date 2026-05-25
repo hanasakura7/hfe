@@ -15,7 +15,8 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 <title>Smart Mushroom Farm — Control Centre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -150,7 +151,8 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             <div class="cctv-grid" id="cctvGrid">
                 <?php for ($z = 1; $z <= 4; $z++): ?>
                 <div class="cctv-cell" data-zone="<?= $z ?>" data-testid="cctv-zone-<?= $z ?>" role="button" tabindex="0">
-                    <div class="cctv-feed" style="background-image: url('images/image_01_01.png?v=20260524');"></div>
+                                        <div class="cctv-feed"></div>
+
                     <div class="cctv-meta">
                         <span class="zone-label">ZONE 0<?= $z ?></span>
                         <span class="bag-count"><i class="fa-solid fa-cubes-stacked"></i> 5 bags</span>
@@ -384,7 +386,8 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             <h3 id="modalTitle">Zone</h3>
             <button id="cctvClose" data-testid="cctv-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
         </header>
-        <div class="cctv-modal-feed" id="modalFeed" style="background-image: url('images/image_01_01.png?v=20260524');"></div>
+                <div class="cctv-modal-feed" id="modalFeed"></div>
+
         <footer>
             <span><i class="fa-solid fa-circle dot-red"></i> Recording · 1920×1080 · 30fps</span>
             <span><i class="fa-solid fa-cubes-stacked"></i> 5 bags in view</span>

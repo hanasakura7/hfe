@@ -3,9 +3,11 @@
  * index.php — Smart Mushroom Farm Management Dashboard
  * Pure semantic skeleton; all dynamic state is hydrated by app.js via api.php.
  */
-require_once __DIR__ . '/db_connect.php';
-$pdo = get_pdo();
-$rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY room_number")->fetchAll();
+$rooms = [
+    ['id' => 1, 'room_number' => 1, 'mushroom_type' => 'Grey Oyster'],
+    ['id' => 2, 'room_number' => 2, 'mushroom_type' => 'Black Jelly'],
+    ['id' => 3, 'room_number' => 3, 'mushroom_type' => 'White Oyster'],
+];
 ?>
 <!doctype html>
 <html lang="en">
@@ -15,12 +17,40 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 <title>Smart Mushroom Farm — Control Centre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<aside class="sidebar" aria-label="Primary navigation">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" title="Collapse sidebar">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <div class="brand sidebar-brand">
+        <span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>
+        <div>
+            <h1>Mushroom Farm</h1>
+            <p>Incubation operations</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <button class="sidebar-nav-item" type="button" data-nav="dashboard" data-label="Dashboard" aria-current="page">
+            <i class="fa-solid fa-table-cells-large"></i><span>Dashboard</span>
+        </button>
+        <button class="sidebar-nav-item" type="button" data-nav="diagnostics" data-label="Diagnostic" aria-current="false">
+            <i class="fa-solid fa-screwdriver-wrench"></i><span>Diagnostic</span>
+        </button>
+        <button class="sidebar-nav-item" type="button" data-nav="logs" data-label="Logs" aria-current="false">
+            <i class="fa-solid fa-clipboard-list"></i><span>Logs</span>
+        </button>
+        <button class="sidebar-nav-item" type="button" data-nav="analytics" data-label="Analytics" aria-current="false">
+            <i class="fa-solid fa-chart-line"></i><span>Analytics</span>
+        </button>
+    </nav>
+</aside>
+
+<div class="app-shell">
 <header class="topbar" data-testid="topbar">
     <div class="brand">
         <span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>
@@ -29,12 +59,6 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             <p>Smart Mushroom Farm · 3 incubation rooms · live telemetry</p>
         </div>
     </div>
-
-    <nav class="topbar-nav" aria-label="Global navigation">
-        <button class="topbar-nav-item" type="button" data-nav="dashboard" aria-current="page">Dashboard</button>
-        <button class="topbar-nav-item" type="button" data-nav="diagnostics" aria-current="false">Diagnostics</button>
-        <button class="topbar-nav-item" type="button" data-nav="logging" aria-current="false">Logging</button>
-    </nav>
 
         <div class="topbar-meta">
         <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle light/dark mode">
@@ -66,6 +90,8 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
         </button>
         <div class="alert-mode" id="alertMode" data-testid="alert-mode" title="Mode">AUTO</div>
     </section>
+
+
 
     <!-- ============================================================ -->
     <!-- ROW 2 — Room tab selector                                      -->
@@ -163,40 +189,65 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 
         <div class="threshold-panel" data-testid="threshold-panel">
             <header>
-                <h3><i class="fa-solid fa-sliders"></i> Standard Range Formulation</h3>
-                <p>Adjust acceptable min/max for this room.</p>
+                <h3><i class="fa-solid fa-sliders"></i> Sensor Thresholds</h3>
+                <p>Set acceptable min/max for each sensor in this room.</p>
             </header>
+            <div class="thr-quick-preset">
+                <span class="thr-preset-label">Quick preset:</span>
+                <button type="button" class="thr-preset-btn" data-preset="seeding">Seeding</button>
+                <button type="button" class="thr-preset-btn" data-preset="colonisation">Colonisation</button>
+                <button type="button" class="thr-preset-btn" data-preset="initiation">Initiation</button>
+                <button type="button" class="thr-preset-btn" data-preset="fruiting">Fruiting</button>
+                <button type="button" class="thr-preset-btn" data-preset="harvest">Harvest</button>
+            </div>
             <form id="thresholdForm" data-testid="threshold-form" autocomplete="off">
+
                 <div class="thr-row">
                     <label>Temperature (°C)</label>
-                    <input type="number" step="0.1" name="temp_min" data-testid="thr-temp-min" placeholder="min">
-                    <input type="number" step="0.1" name="temp_max" data-testid="thr-temp-max" placeholder="max">
+                    <div class="thr-input-pair">
+                        <input type="number" step="0.5" name="temp_min" data-testid="thr-temp-min" min="5" max="40" value="20">
+                        <input type="number" step="0.5" name="temp_max" data-testid="thr-temp-max" min="5" max="40" value="24">
+                    </div>
                 </div>
+
                 <div class="thr-row">
                     <label>Humidity (%)</label>
-                    <input type="number" step="0.1" name="humidity_min" data-testid="thr-humidity-min" placeholder="min">
-                    <input type="number" step="0.1" name="humidity_max" data-testid="thr-humidity-max" placeholder="max">
+                    <div class="thr-input-pair">
+                        <input type="number" step="1" name="humidity_min" data-testid="thr-humidity-min" min="40" max="100" value="85">
+                        <input type="number" step="1" name="humidity_max" data-testid="thr-humidity-max" min="40" max="100" value="95">
+                    </div>
                 </div>
+
                 <div class="thr-row">
                     <label>Lighting (Lux)</label>
-                    <input type="number" step="1" name="light_min" data-testid="thr-light-min" placeholder="min">
-                    <input type="number" step="1" name="light_max" data-testid="thr-light-max" placeholder="max">
+                    <div class="thr-input-pair">
+                        <input type="number" step="10" name="light_min" data-testid="thr-light-min" min="0" max="1000" value="200">
+                        <input type="number" step="10" name="light_max" data-testid="thr-light-max" min="0" max="1000" value="500">
+                    </div>
                 </div>
+
                 <div class="thr-row">
                     <label>CO₂ (ppm)</label>
-                    <input type="number" step="1" name="co2_min" data-testid="thr-co2-min" placeholder="min">
-                    <input type="number" step="1" name="co2_max" data-testid="thr-co2-max" placeholder="max">
+                    <div class="thr-input-pair">
+                        <input type="number" step="10" name="co2_min" data-testid="thr-co2-min" min="200" max="2000" value="500">
+                        <input type="number" step="10" name="co2_max" data-testid="thr-co2-max" min="200" max="2000" value="1000">
+                    </div>
                 </div>
+
                 <div class="thr-row">
                     <label>Air Flow (m³/h)</label>
-                    <input type="number" step="0.1" name="airflow_min" data-testid="thr-airflow-min" placeholder="min">
-                    <input type="number" step="0.1" name="airflow_max" data-testid="thr-airflow-max" placeholder="max">
+                    <div class="thr-input-pair">
+                        <input type="number" step="0.5" name="airflow_min" data-testid="thr-airflow-min" min="0" max="50" value="15">
+                        <input type="number" step="0.5" name="airflow_max" data-testid="thr-airflow-max" min="0" max="50" value="25">
+                    </div>
                 </div>
+
                 <button type="submit" class="btn-primary" data-testid="save-thresholds">
                     <i class="fa-solid fa-floppy-disk"></i> Save Thresholds
                 </button>
                 <p class="thr-status" id="thrStatus" data-testid="thr-status"></p>
             </form>
+            <div class="phase-range-card" id="phaseRangeCard"></div>
         </div>
     </section>
 
@@ -225,6 +276,18 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
                 <i class="fa-solid fa-triangle-exclamation"></i> OVERDUE
             </span>
         </div>
+        <div class="phase-guidance" id="phaseGuidance"></div>
+        <div class="harvest-panel">
+            <h4><i class="fa-solid fa-basket-shopping"></i> Harvest checklist and yield record</h4>
+            <label><input type="checkbox"> Caps inspected for maturity</label>
+            <label><input type="checkbox"> Bags checked for contamination</label>
+            <label><input type="checkbox"> Harvest trays cleaned and labelled</label>
+            <div class="yield-row">
+                <label for="yieldKg">Yield estimate</label>
+                <input id="yieldKg" type="number" min="0" step="0.1" placeholder="kg">
+                <button type="button" class="btn-secondary mock-action"><i class="fa-solid fa-floppy-disk"></i> Record</button>
+            </div>
+        </div>
     </section>
 
 </main>
@@ -240,7 +303,7 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             </div>
             <div class="pill pill-status" id="systemStatusPill"><span class="dot"></span> <span>SYSTEM OK</span></div>
         </header>
-        <div class="log-list">
+        <div class="log-list" id="systemHealthList">
             <article class="log-entry">
                 <i class="fa-solid fa-microchip"></i>
                 <div>
@@ -288,7 +351,7 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
             </div>
             <div class="pill pill-status" id="equipmentStatusPill"><span class="dot"></span> <span>EQUIPMENT ISSUES</span></div>
         </header>
-        <div class="log-list">
+        <div class="log-list" id="equipmentConditionList">
             
             <article class="log-entry diag-card-clickable" data-equip="acu">
                 <i class="fa-solid fa-snowflake"></i>
@@ -354,19 +417,23 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
 </main>
 
 
-<main class="logging-view app-view hidden" data-view="logging" data-testid="logging-view">
-
-    <section class="logging-panel">
-        <header>
+<main class="logs-view app-view hidden" data-view="logs" data-testid="logs-view">
+    <section class="action-history-panel collapsible-panel" id="actionHistorySection">
+        <header class="collapsible-header" id="actionHistoryToggle" role="button" tabindex="0" aria-expanded="true">
             <div>
-                <p class="log-kicker">User Activity</p>
-                <h2><i class="fa-solid fa-clipboard-list"></i> Logging</h2>
+                <p class="section-kicker">Operator audit trail</p>
+                <h3><i class="fa-solid fa-clipboard-list"></i> Action History</h3>
             </div>
-            <button class="log-clear-btn" id="clearLogsBtn" type="button">
-                <i class="fa-solid fa-trash-can"></i> Clear
-            </button>
+            <div class="collapsible-header-actions">
+                <button class="log-clear-btn" id="clearLogsBtn" type="button">
+                    <i class="fa-solid fa-trash-can"></i> Clear
+                </button>
+                <button class="collapse-toggle-btn" type="button" aria-label="Toggle section">
+                    <i class="fa-solid fa-chevron-up"></i>
+                </button>
+            </div>
         </header>
-        <div class="log-list" id="logList">
+        <div class="log-list collapsible-body" id="logList">
             <div class="log-empty">
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 <span>No user actions logged yet.</span>
@@ -374,6 +441,106 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
         </div>
     </section>
 </main>
+
+<main class="analytics-view app-view hidden" data-view="analytics" data-testid="analytics-view">
+
+  <!-- ── ROOM TABS ──────────────────────────────────────────────── -->
+  <section class="an-room-tabs" id="filterRooms" aria-label="Room filter">
+    <button class="an-room-tab active" data-room="all">
+      <span class="an-room-tab-inner">
+        <span class="an-room-num">All</span>
+        <span class="an-room-name">All Rooms</span>
+      </span>
+    </button>
+    <button class="an-room-tab" data-room="1" style="--tab-accent:#c0822a">
+      <span class="an-room-tab-inner">
+        <span class="an-room-num">Room 1</span>
+        <span class="an-room-name">Grey Oyster</span>
+      </span>
+    </button>
+    <button class="an-room-tab" data-room="2" style="--tab-accent:#5d7a4f">
+      <span class="an-room-tab-inner">
+        <span class="an-room-num">Room 2</span>
+        <span class="an-room-name">Black Jelly</span>
+      </span>
+    </button>
+    <button class="an-room-tab" data-room="3" style="--tab-accent:#7a6a9c">
+      <span class="an-room-tab-inner">
+        <span class="an-room-num">Room 3</span>
+        <span class="an-room-name">White Oyster</span>
+      </span>
+    </button>
+  </section>
+
+  <!-- ── METRIC + RANGE BAR ────────────────────────────────────────── -->
+  <section class="analytics-filter-bar" aria-label="Metric and range filters">
+
+    <div class="filter-group">
+      <span class="filter-label">
+        <span class="filter-label-icon"><i class="fa-solid fa-chart-line"></i></span>
+        <span class="filter-label-text">Metric</span>
+      </span>
+      <div class="filter-chips" id="filterMetrics">
+        <button class="chip active" data-metric="Temperature"><i class="fa-solid fa-temperature-half"></i> Temp</button>
+        <button class="chip" data-metric="Humidity"><i class="fa-solid fa-droplet"></i> Humidity</button>
+        <button class="chip" data-metric="CO2"><i class="fa-solid fa-wind"></i> CO&#8322;</button>
+        <button class="chip" data-metric="Airflow"><i class="fa-solid fa-fan"></i> Airflow</button>
+        <button class="chip" data-metric="Lighting"><i class="fa-solid fa-sun"></i> Lighting</button>
+      </div>
+    </div>
+
+    <div class="filter-divider-v"></div>
+
+    <div class="filter-group filter-group-range">
+      <span class="filter-label">
+        <span class="filter-label-icon"><i class="fa-regular fa-calendar"></i></span>
+        <span class="filter-label-text">Range</span>
+      </span>
+      <div class="filter-chips" id="filterRange">
+        <button class="chip chip-range active" data-range="7">
+          <i class="fa-regular fa-calendar"></i> Last 7 days
+        </button>
+        <button class="chip chip-range" data-range="14">
+          <i class="fa-regular fa-calendar"></i> Last 14 days
+        </button>
+        <button class="chip chip-range" data-range="30">
+          <i class="fa-regular fa-calendar"></i> Last 30 days
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── MAIN DETAIL CHART ────────────────────────────────────── -->
+  <article class="logging-panel detail-chart-panel">
+    <header>
+      <div>
+        <p class="log-kicker" id="chartKicker">Sensor History &middot; All Rooms &middot; &deg;C</p>
+        <h2 id="chartTitle"><i class="fa-solid fa-temperature-half"></i> Temperature &mdash; Last 7 Days</h2>
+      </div>
+      <div class="chart-legend" id="chartLegend"></div>
+    </header>
+    <div class="chart-container" id="mainChart">
+      <div class="chart-placeholder"><i class="fa-solid fa-chart-line"></i> Loading chart&hellip;</div>
+    </div>
+  </article>
+
+  <!-- ── GROWTH HARVEST CHART ──────────────────────────── -->
+  <article class="logging-panel growth-chart-panel">
+    <header class="growth-chart-header">
+      <div>
+        <p class="log-kicker">Growth &amp; Yield</p>
+        <h2><i class="fa-solid fa-seedling"></i> Mushroom Growth to Harvest</h2>
+      </div>
+      <div class="growth-chart-legend" id="growthLegend"></div>
+    </header>
+    <div class="growth-phase-labels" id="growthPhaseLabels"></div>
+    <div class="growth-chart-wrap" id="growthChart"></div>
+    <div class="growth-stats-row" id="growthStats"></div>
+  </article>
+
+</main>
+
 
 <!-- ============================================================ -->
 <!-- CCTV modal                                                     -->
@@ -397,8 +564,8 @@ $rooms = $pdo->query("SELECT id, room_number, mushroom_type FROM rooms ORDER BY 
     <span>© Mycelium Control · XAMPP / PHP <?= PHP_VERSION ?></span>
     <span id="lastSync" data-testid="last-sync">last sync —</span>
 </footer>
+</div>
 
 <script src="app.js"></script>
 </body>
 </html>
-
